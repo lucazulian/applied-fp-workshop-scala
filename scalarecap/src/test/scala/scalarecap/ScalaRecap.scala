@@ -20,43 +20,70 @@ class ScalaRecap extends munit.FunSuite {
    *       and add the code to get a green test
    */
 
+  case class Person(name: String, age: Int) {
+    def apply(token: String): String ={
+      s"$token mi chiamo $name!"
+    }
+
+    def makeOlder(value: Int): Person ={
+      Person(name, age + value)
+    }
+
+    def makeYounger(implicit value: Int): Person ={
+      Person(name, age - value)
+    }
+  }
+
+  object Person {
+    def apply(token: String): Person =
+      create(token)
+
+    def create(value: String): Person ={
+      val tokens = value.split(";")
+      val name = tokens(0)
+      val age = tokens(1).toInt
+
+     Person(name, age)
+    }
+  }
+
   test("define case class") {
     // TODO: define a case class w/ two fields: name and age
-    // val result = Person("foo", 56)
-    // assertEquals(result, Person("foo", 56))
+    val result = Person("foo", 56)
+    assertEquals(result, Person("foo", 56))
   }
 
   test("define the case class's companion object") {
     // TODO: define a companion object w/ a creation method that takes one string
-    // val result = Person.create("foo;56")
-    // assertEquals(result, Person("foo", 56))
+     val result = Person.create("foo;56")
+     assertEquals(result, Person("foo", 56))
   }
 
   test("case class apply") {
     // TODO: define an apply function on Person case class
-    // val result = Person("foo", 56)("Ciao,")
-    // assertEquals(result, "Ciao, mi chiamo foo!")
+     val result = Person("foo", 56)("Ciao,")
+     assertEquals(result, "Ciao, mi chiamo foo!")
   }
 
   test("companion object apply") {
     // TODO: define an apply function on Person companion object
-    // val result = Person("foo;56")("Ciao,")
-    // assertEquals(result, "Ciao, mi chiamo foo!")
+     val result = Person("foo;56")("Ciao,")
+     assertEquals(result, "Ciao, mi chiamo foo!")
   }
 
   test("update case class state") {
     // TODO: define makeOlder function to increase age
-    // val p      = Person("foo", 56)
-    // val result = p.makeOlder(100)
-    // assertEquals(result.age, 156)
+     val p      = Person("foo", 56)
+     val result = p.makeOlder(100)
+     assertEquals(result.age, 156)
   }
 
   test("implicit parameter") {
     // TODO: define makeYounger function w/ an implicit parameter
-    // implicit val years = 30
-    // val p              = Person("foo", 56)
-    // val result         = p.makeYounger
-    // assertEquals(result.age, 26)
+     implicit val years = 30
+     val p              = Person("foo", 56)
+     val result         = p.makeYounger
+     assertEquals(result.age, 26)
   }
 
   test("pattern match") {
