@@ -26,11 +26,22 @@ class ModelBehaviours extends munit.FunSuite {
     in => 1.0 / in
 
   val reciprocalString: String => String = in => {
-    ???
+    asString(reciprocal(parseString(in)))
+  }
+
+  val reciprocalString_one: String => String = in => {
+    val toReciprocal: String => Double = reciprocal.compose(parseString)
+    asString.compose(toReciprocal).apply(in)
+  }
+
+  val reciprocalString_two: String => String = in => {
+    asString.compose(reciprocal).compose(parseString).apply(in)
   }
 
   test("reciprocal of string number".ignore) {
     // TODO: use existing function to compute a reciprocal in string
     assertEquals(reciprocalString("42"), "0.023809523809523808")
+    assertEquals(reciprocalString_one("42"), "0.023809523809523808")
+    assertEquals(reciprocalString_two("42"), "0.023809523809523808")
   }
 }
