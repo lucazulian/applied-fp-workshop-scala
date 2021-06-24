@@ -14,6 +14,8 @@ class Version1Tests extends munit.FunSuite {
 // | 0,0 |     |     |     | 4,0 |
 // +-----+-----+-----+-----+-----+
 
+  val planet: Planet = Planet(Size(5, 4))
+
   test("turn right command") {
     /*
         Planet: 5 4
@@ -22,6 +24,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 0 E
    */
+    val rover = Rover(Position(0, 0), North)
+    val program = Program(planet, rover, Right)
+
+    assertEquals(run(program), Rover(Position(0, 0), Est))
   }
 
   test("turn left command") {
@@ -32,6 +38,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 0 W
    */
+    val rover = Rover(Position(0, 0), North)
+    val program = Program(planet, rover, Left)
+
+    assertEquals(run(program), Rover(Position(0, 0), West))
   }
 
   test("move forward command") {
@@ -42,6 +52,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 2 N
    */
+    val rover = Rover(Position(0, 1), North)
+    val program = Program(planet, rover, Forward)
+
+    assertEquals(run(program), Rover(Position(0, 2), North))
   }
 
   test("move forward command, opposite orientation") {
@@ -52,6 +66,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 0 S
    */
+    val rover = Rover(Position(0, 1), South)
+    val program = Program(planet, rover, Forward)
+
+    assertEquals(run(program), Rover(Position(0, 0), South))
   }
 
   test("move backward command") {
@@ -62,6 +80,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 0 N
    */
+    val rover = Rover(Position(0, 1), North)
+    val program = Program(planet, rover, Backward)
+
+    assertEquals(run(program), Rover(Position(0, 0), North))
   }
 
   test("move backward command, opposite orientation") {
@@ -72,6 +94,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 2 S
    */
+    val rover = Rover(Position(0, 1), South)
+    val program = Program(planet, rover, Backward)
+
+    assertEquals(run(program), Rover(Position(0, 2), South))
   }
 
   test("wrap on North") {
@@ -82,6 +108,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 0 N
    */
+    val rover = Rover(Position(0, 3), North)
+    val program = Program(planet, rover, Forward)
+
+    assertEquals(run(program), Rover(Position(0, 0), North))
   }
 
   test("wrap on South") {
@@ -92,6 +122,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 3 S
    */
+    val rover = Rover(Position(0, 0), South)
+    val program = Program(planet, rover, Forward)
+
+    assertEquals(run(program), Rover(Position(0, 3), South))
   }
 
   test("wrap on Est") {
@@ -102,6 +136,10 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 0 1 E
    */
+    val rover = Rover(Position(4, 1), Est)
+    val program = Program(planet, rover, Forward)
+
+    assertEquals(run(program), Rover(Position(0, 1), Est))
   }
 
   test("wrap on West") {
@@ -112,5 +150,9 @@ class Version1Tests extends munit.FunSuite {
         --
         Rover: 4 1 W
    */
+    val rover = Rover(Position(0, 1), West)
+    val program = Program(planet, rover, Forward)
+
+    assertEquals(run(program), Rover(Position(4, 1), West))
   }
 }
