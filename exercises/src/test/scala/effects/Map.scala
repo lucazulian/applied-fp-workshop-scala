@@ -12,12 +12,18 @@ class Map extends munit.FunSuite {
     item.copy(qty = item.qty + qty)
 
   test("valid creation, can checkIn") {
-    val item = createItem("100")
+    val item: Option[Item] = createItem("100")
+
     // TODO: chain checkIn of 10 items and write the assert
+    val result: Option[Item] = item.map(item => checkIn(10, item))
+    assertEquals(result, Some(Item(110)))
   }
 
   test("invalid creation - map short circuit") {
-    val item = createItem("asd")
+    val item: Option[Item] = createItem("asd")
+
     // TODO: chain checkIn of 10 items and write the assert
+    val result: Option[Item] = item.map(item => checkIn(10, item))
+    assertEquals(result, None)
   }
 }

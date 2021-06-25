@@ -8,17 +8,21 @@ class SmartConstructor extends munit.FunSuite {
 
   case class Item(qty: Int)
 
-  def createItem(qty: String): Item =
-    if (qty.matches("^[0-9]+$")) Item(qty.toInt)
-    else null
+  sealed trait MaybeItem
+  case class Valid(item: Item) extends MaybeItem
+  case object Invalid extends MaybeItem
+
+  def createItem(qty: String): MaybeItem =
+    if (qty.matches("^[0-9]+$")) Valid(Item(qty.toInt))
+    else Invalid
 
   test("valid") {
-    assertEquals(createItem("100"), Item(100))
+    assertEquals(createItem("100"), Valid(Item(100)))
   }
 
   test("invalid") {
-    assertEquals(createItem("asd"), null)
-    assertEquals(createItem("1 0 0"), null)
-    assertEquals(createItem(""), null)
+    assertEquals(createItem("asd"), Invalid)
+    assertEquals(createItem("1 0 0"), Invalid)
+    assertEquals(createItem(""), Invalid)
   }
 }
