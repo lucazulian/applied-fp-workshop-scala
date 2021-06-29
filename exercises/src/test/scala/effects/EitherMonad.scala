@@ -18,15 +18,18 @@ class EitherMonad extends munit.FunSuite {
   def checkIn(qty: Int, item: Item): Item =
     item.copy(qty = item.qty + qty)
 
-  test("scenario".ignore) {
+  test("scenario") {
     // TODO: implement follow steps
     // load an item
     // checkIn 10
     // save item
-    val program: Either[Error, Unit] = ???
+    val stepOne: Either[Error, Item]   = load(ItemId(1))
+    val stepTwo: Either[Error, Item]   = stepOne.map(checkIn(10, _))
+    val stepThree: Either[Error, Unit] = stepTwo.flatMap(save)
+
+    val program: Either[Error, Unit] = stepThree
 
     // run the computation
     program.fold("err " + _, "value " + _)
   }
-
 }

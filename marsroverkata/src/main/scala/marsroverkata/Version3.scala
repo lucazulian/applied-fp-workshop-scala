@@ -5,6 +5,53 @@ object Version3 {
   import scala.util._
   import cats.implicits._
 
+  def run(planet: (String, String), rover: (String, String), commands: String): String = ???
+
+  def parseDirection(direction: String): Either[String, Direction] =
+    direction match {
+      case "N" => Right(N)
+      case "S" => Right(S)
+      case "W" => Right(W)
+      case "E" => Right(E)
+      case _   => Left("Invalid direction")
+    }
+
+  def parseCommand(command: Char): Either[String, Command] =
+    command match {
+      case 'R' => Right(Turn(OnRight))
+      case 'L' => Right(Turn(OnLeft))
+      case 'F' => Right(Move(Forward))
+      case 'B' => Right(Move(Backward))
+      case _   => Left("Invalid command")
+    }
+
+  def parsePosition[A](value: String, separator: Char): Either[String, Position] = {
+    val sizes: Array[String] = value.split(separator)
+
+    val x: Either[String, Int] = Try(sizes(0).trim().toInt).toEither.leftMap(_ => "Invalid x size")
+    val y: Either[String, Int] = Try(sizes(1).trim().toInt).toEither.leftMap(_ => "Invalid y size")
+
+    (x, y).mapN(Position)
+  }
+
+  def parseSize(size: String): Either[String, Size] =
+    parsePosition(size, 'x').map(x => Size(x.x, x.y))
+
+  def parseObstacle(obstacles: String): Either[String, Obstacle] =
+    parsePosition(obstacles, ',').map(Obstacle)
+
+  def parseObstacles(obstacles: String): Either[String, List[Obstacle]] =
+    obstacles.split(' ').toList.traverse(parseObstacle)
+
+  def parsePlanet(planet: (String, String)): Either[String, Planet] =
+    (parseSize(planet._1), parseObstacles(planet._2)).mapN(Planet)
+
+  def parseRover(rover: (String, String)): Either[String, Rover] =
+    (parsePosition(rover._1, ','), parseDirection(rover._2)).mapN(Rover)
+
+  def parseCommands(commands: String): Either[String, List[Command]] =
+    commands.toList.traverse(parseCommand)
+
   def execute(mission: Mission, commands: List[Command]): Either[Mission, Mission] =
     commands.foldLeftM(mission)(execute)
 

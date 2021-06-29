@@ -24,6 +24,8 @@ class Version3Tests extends munit.FunSuite {
     // invoke a function with: planet, obstacles, rover and commands
 
     // assert result, OK "4:3:E"
+    var result = run(planet, rover, commands)
+    assertEquals(result, "4:3:E")
   }
 
   test("hit obstacle") {

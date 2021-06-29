@@ -10,7 +10,7 @@ class SmartConstructor extends munit.FunSuite {
 
   sealed trait MaybeItem
   case class Valid(item: Item) extends MaybeItem
-  case object Invalid extends MaybeItem
+  case object Invalid          extends MaybeItem
 
   def createItem(qty: String): MaybeItem =
     if (qty.matches("^[0-9]+$")) Valid(Item(qty.toInt))

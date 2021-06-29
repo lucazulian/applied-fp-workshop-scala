@@ -23,21 +23,29 @@ class Ap extends munit.FunSuite {
 
   test("valid creation") {
     val item = createItem("foo", "100")
+
     // TODO: write the assert
+    assertEquals(item, Some(Item("foo", 100)))
   }
 
   test("invalid creation (name)") {
     val item = createItem("", "100")
+
     // TODO: write the assert
+    assertEquals(item, None)
   }
 
   test("invalid creation (qty)") {
     val item = createItem("foo", "asd")
+
     // TODO: write the assert
+    assertEquals(item, None)
   }
 
   test("invalid creation (both)") {
     val item = createItem("", "asd")
+
     // TODO: write the assert
+    assertEquals(item, None)
   }
 }

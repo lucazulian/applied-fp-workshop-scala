@@ -44,14 +44,14 @@ class MultipleDispatch extends munit.FunSuite {
   object TrafficLight {
     def next(current: TrafficLight): TrafficLight =
       current match {
-        case Red => Green
-        case Green => Yellow
+        case Red    => Green
+        case Green  => Yellow
         case Yellow => Red
       }
   }
 
-  case object Red extends TrafficLight
-  case object Green extends TrafficLight
+  case object Red    extends TrafficLight
+  case object Green  extends TrafficLight
   case object Yellow extends TrafficLight
 
   test("turn right") {

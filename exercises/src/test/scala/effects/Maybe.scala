@@ -6,23 +6,23 @@ class Maybe extends munit.FunSuite {
 
     def map[B](f: A => B): Maybe[B] = this match {
       case Yes(value) => Yes(f(value))
-      case Nope() => Nope()
+      case Nope()     => Nope()
     }
     // = flatMap(x => Maybe.pure(f(x)))
 
     def flatMap[B](f: A => Maybe[B]): Maybe[B] = this match {
       case Yes(value) => f(value)
-      case Nope() =>  Nope()
+      case Nope()     => Nope()
     }
 
     def runOr(default: => A): A = this match {
       case Yes(value) => value
-      case Nope() => default
+      case Nope()     => default
     }
   }
 
   case class Yes[A](value: A) extends Maybe[A]
-  case class Nope[A]() extends Maybe[A]
+  case class Nope[A]()        extends Maybe[A]
 
   object Maybe {
     def pure[A](a: A): Maybe[A] = Yes(a)

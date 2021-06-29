@@ -75,7 +75,7 @@ class ProgramAsValues extends munit.FunSuite {
   object DifferentEvaluator {
     sealed trait Expr
 
-    case class Num(x: Int) extends Expr
+    case class Num(x: Int)             extends Expr
     case class Plus(x: Expr, y: Expr)  extends Expr
     case class Times(x: Expr, y: Expr) extends Expr
 
@@ -90,15 +90,15 @@ class ProgramAsValues extends munit.FunSuite {
 
     def eval(e: Expr): Int =
       e match {
-        case Num(x) => x
-        case Plus(x, y) => eval(x) + eval(y)
+        case Num(x)      => x
+        case Plus(x, y)  => eval(x) + eval(y)
         case Times(x, y) => eval(x) * eval(y)
       }
 
     def evalPrint(e: Expr): String =
       e match {
-        case Num(x) => s"$x"
-        case Plus(x, y) => s"(${evalPrint(x)} + ${evalPrint(y)})"
+        case Num(x)      => s"$x"
+        case Plus(x, y)  => s"(${evalPrint(x)} + ${evalPrint(y)})"
         case Times(x, y) => s"(${evalPrint(x)} * ${evalPrint(y)})"
       }
   }

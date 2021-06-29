@@ -17,15 +17,14 @@ class IOMonad extends munit.FunSuite {
   def checkIn(qty: Int, item: Item): Item =
     item.copy(qty = item.qty + qty)
 
-  test("scenario".ignore) {
+  test("scenario") {
     // TODO: implement follow steps
     // load an item
     // checkIn 10
     // save item
-    val program: IO[Unit] = ???
+    val program: IO[Unit] = load(ItemId(1)).map(checkIn(10, _)).flatMap(save)
 
     // run the computation
     program.unsafeRunSync()
   }
-
 }
