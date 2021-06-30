@@ -24,8 +24,8 @@ class Version3Tests extends munit.FunSuite {
     // invoke a function with: planet, obstacles, rover and commands
 
     // assert result, OK "4:3:E"
-    var result = run(planet, rover, commands)
-    assertEquals(result, "4:3:E")
+    val result = run(planet, rover, commands)
+    assertEquals(result, Right("4:3:E"))
   }
 
   test("hit obstacle") {
@@ -37,6 +37,8 @@ class Version3Tests extends munit.FunSuite {
     // invoke a function with: planet, obstacles, rover and commands
 
     // assert result, OK "O:1:0:E"
+    val result = run(planet, rover, commands)
+    assertEquals(result, Right("O:1:0:E"))
   }
 
   test("invalid planet input data") {
@@ -48,6 +50,8 @@ class Version3Tests extends munit.FunSuite {
     // invoke a function with: planet, obstacles, rover and commands
 
     // assert result, ERROR "Invalid planet size"
+    val result = run(planet, rover, commands)
+    assertEquals(result, Left("Invalid planet size"))
   }
 
   test("invalid rover input data") {
@@ -59,6 +63,8 @@ class Version3Tests extends munit.FunSuite {
     // invoke a function with: planet, obstacles, rover and commands
 
     // assert result, ERROR "Invalid rover direction"
+    val result = run(planet, rover, commands)
+    assertEquals(result, Left("Invalid rover direction"))
   }
 
   test("unknown command") {
@@ -70,5 +76,7 @@ class Version3Tests extends munit.FunSuite {
     // invoke a function with: planet, obstacles, rover and commands
 
     // assert result, OK "0:1:S"
+    val result = run(planet, rover, commands)
+    assertEquals(result, Right("0:1:S"))
   }
 }

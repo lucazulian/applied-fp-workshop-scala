@@ -5,7 +5,18 @@ object Version3 {
   import scala.util._
   import cats.implicits._
 
-  def run(planet: (String, String), rover: (String, String), commands: String): String = ???
+  def run(planet: (String, String), rover: (String, String), commands: String): Either[String, String] = {
+    val mission: Either[String, Mission]              = (parsePlanet(planet), parseRover(rover)).mapN(Mission)
+    val parsedCommands: Either[String, List[Command]] = parseCommands(commands)
+    val a: Either[String, Either[Mission, Mission]]   = (mission, parsedCommands).mapN(execute)
+
+    a.map((x: Either[Mission, Mission]) => x.fold(missionAbortedRendering, missionRendering))
+  }
+
+  def missionRendering(mission: Mission): String =
+    s"${mission.rover.position.x}:${mission.rover.position.y}:${mission.rover.direction}"
+
+  def missionAbortedRendering(mission: Mission): String = s"O:${missionRendering(mission)}"
 
   def parseDirection(direction: String): Either[String, Direction] =
     direction match {
@@ -13,22 +24,25 @@ object Version3 {
       case "S" => Right(S)
       case "W" => Right(W)
       case "E" => Right(E)
-      case _   => Left("Invalid direction")
+      case _   => Left("Invalid rover direction")
     }
 
-  def parseCommand(command: Char): Either[String, Command] =
+  def parseCommand(command: Char): Option[Command] =
     command match {
-      case 'R' => Right(Turn(OnRight))
-      case 'L' => Right(Turn(OnLeft))
-      case 'F' => Right(Move(Forward))
-      case 'B' => Right(Move(Backward))
-      case _   => Left("Invalid command")
+      case 'R' => Some(Turn(OnRight))
+      case 'L' => Some(Turn(OnLeft))
+      case 'F' => Some(Move(Forward))
+      case 'B' => Some(Move(Backward))
+      case _   => None
     }
 
   def parsePosition[A](value: String, separator: Char): Either[String, Position] = {
     val sizes: Array[String] = value.split(separator)
 
-    val x: Either[String, Int] = Try(sizes(0).trim().toInt).toEither.leftMap(_ => "Invalid x size")
+    val a: Try[Int]               = Try(sizes(0).trim().toInt)
+    val b: Either[Throwable, Int] = a.toEither
+    val x: Either[String, Int]    = b.leftMap(_ => "Invalid x size")
+//    val x1: Either[String, Int] = a.toOption.toRight("Invalid x size")
     val y: Either[String, Int] = Try(sizes(1).trim().toInt).toEither.leftMap(_ => "Invalid y size")
 
     (x, y).mapN(Position)
@@ -44,13 +58,15 @@ object Version3 {
     obstacles.split(' ').toList.traverse(parseObstacle)
 
   def parsePlanet(planet: (String, String)): Either[String, Planet] =
-    (parseSize(planet._1), parseObstacles(planet._2)).mapN(Planet)
+    (parseSize(planet._1), parseObstacles(planet._2))
+      .mapN(Planet)
+      .leftMap(_ => "Invalid planet size")
 
   def parseRover(rover: (String, String)): Either[String, Rover] =
     (parsePosition(rover._1, ','), parseDirection(rover._2)).mapN(Rover)
 
   def parseCommands(commands: String): Either[String, List[Command]] =
-    commands.toList.traverse(parseCommand)
+    commands.toList.map(parseCommand).filter(_.isDefined).sequence.toRight("Invalid commands")
 
   def execute(mission: Mission, commands: List[Command]): Either[Mission, Mission] =
     commands.foldLeftM(mission)(execute)
